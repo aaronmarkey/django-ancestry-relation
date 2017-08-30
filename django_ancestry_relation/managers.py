@@ -206,3 +206,6 @@ class NodeManager(models.Manager):
 
         tree = [nodes[i] for i in ints]
         return tree
+
+    def delete_tree(self, node):
+        node.delete()

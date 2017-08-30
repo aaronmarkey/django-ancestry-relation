@@ -1,6 +1,6 @@
 Metadata-Version: 1.1
 Name: django-ancestry-relation
-Version: 0.2
+Version: 0.3
 Summary: A Django app that makes an abstract Node model available for flat stacking hierarchical data in a database.
 Home-page: https://github.com/aaronmarkey
 Author: Aaron Markey
