@@ -1,14 +1,13 @@
 Metadata-Version: 1.1
 Name: django-ancestry-relation
-Version: 0.1
+Version: 0.2
 Summary: A Django app that makes an abstract Node model available for flat stacking hierarchical data in a database.
 Home-page: https://github.com/aaronmarkey
 Author: Aaron Markey
 Author-email: markeyaaron@gmail.com
 License: BSD License 
-Description: =====
-        Django Ancestry Relation
-        =====
+Description: Django Ancestry Relation
+        ------------------------
         Provides an abstract model class for heirarchical data to be stored in a database. 
         Provides a manager to interface with the model.
         
@@ -16,13 +15,13 @@ Description: =====
         
         Quick start
         -----------
-        
-        1. Add "django_ancestry_relation.apps.DjangoAncestryRelationConfig" to your INSTALLED_APPS setting like this::
-        
-            INSTALLED_APPS = [
-                                ...
-                                'django_ancestry_relation'
-                             ]
+        1. Add "django_ancestry_relation" to your INSTALLED_APPS setting like this::
+        ```
+        INSTALLED_APPS = [
+            ...,
+            'django_ancestry_relation'
+        ]
+        ```
         
         
 Platform: UNKNOWN
