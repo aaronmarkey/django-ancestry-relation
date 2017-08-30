@@ -1,0 +1,9 @@
+LICENSE
+MANIFEST.in
+README.md
+setup.py
+django_ancestry_relation.egg-info/PKG-INFO
+django_ancestry_relation.egg-info/SOURCES.txt
+django_ancestry_relation.egg-info/dependency_links.txt
+django_ancestry_relation.egg-info/top_level.txt
+docs/.blah
