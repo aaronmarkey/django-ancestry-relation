@@ -9,13 +9,13 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='django-ancestry-relation',
-    version='0.3',
+    version='0.4',
     packages=find_packages(),
     include_package_data=True,
     license='BSD License ',
     description='A Django app that makes an abstract Node model available for flat stacking hierarchical data in a database.',
     long_description=README,
-    url='https://github.com/aaronmarkey',
+    url='https://github.com/aaronmarkey/django-ancestry-relation',
     author='Aaron Markey',
     author_email='markeyaaron@gmail.com',
     classifiers=[
