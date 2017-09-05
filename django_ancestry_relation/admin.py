@@ -1,12 +1,9 @@
 from django.contrib import admin
-from django_ancestry_relation.models import TestNode
 from django.core import urlresolvers
 from django.contrib.contenttypes.models import ContentType
 
 
-
-@admin.register(TestNode)
-class TestNodeAdmin(admin.ModelAdmin):
+class NodeAdmin(admin.ModelAdmin):
     readonly_fields = ('id', 'level', 'path', 'parent_node', 'link_parent_node', 'root_node', 'link_root_node')
     search_fields = ('id', 'root_node__id', 'parent_node__id', 'path')
 
