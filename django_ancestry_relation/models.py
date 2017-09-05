@@ -36,6 +36,7 @@ class Node(models.Model):
         help_text='The level of the node, in relation to it\'s height in the tree. Starts at root, with level = 1.'
     )
     path = models.TextField(
+        db_index=True,
         help_text='A CSV list of the ids leading to this Node. Root will be a list of one item, it\'s own id.'
     )
 
@@ -50,13 +51,3 @@ class Node(models.Model):
             self.root_node.id,
             self.level
         )
-
-
-class TestNode(Node):
-    data = models.CharField(
-        max_length=50,
-        blank=True
-    )
-
-    class Meta:
-        managed = False

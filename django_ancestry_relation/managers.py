@@ -15,7 +15,7 @@ class NodeManager(models.Manager):
         node = self.model(**kwargs)
         # generate level
         if 'level' not in kwargs:
-            if node.parent_node:
+            if node.parent_node_id:
                 node.level = node.parent_node.level + 1
             else:
                 node.level = 1
@@ -60,7 +60,7 @@ class NodeManager(models.Manager):
 
     def ancestral_nodes(self, node):
         '''
-        Get a list of all nodes that are ascendents or descents of the given
+        Get a list of all nodes that are ascendants or descendants of the given
         node.
 
         ARGS
@@ -76,7 +76,7 @@ class NodeManager(models.Manager):
         node_ids = node.path.split(',')
         return self.filter(id__in=node_ids).order_by('level')
 
-    def decendents(self, node):
+    def descendants(self, node):
         '''
         Get a complete list of all nodes that inheiret from the given node.
 
@@ -128,7 +128,7 @@ class NodeManager(models.Manager):
             )
         return leaves
 
-    def hierarchical_structured_tree(self, node):
+    def hierarchical_(self, node):
         '''
         Get a structured representation of Nodes. Uses the StructuredNode class
         found at classes.StructuredNode.
@@ -143,6 +143,10 @@ class NodeManager(models.Manager):
         -------
         tree: StructuredNode
             A single StructuredNode object.
+
+        NOTE
+        ----
+        This is slow. Do not use if descendants_ordered() can be used in any way.
         '''
         from django_ancestry_relation.classes import StructuredNode
         children_count = self.children(node).count()
@@ -159,77 +163,27 @@ class NodeManager(models.Manager):
                 )
         return tree
 
-    def flat_structured_tree_slower(self, node):
+    def descendants_ordered(self, node):
         '''
-        Get a one dimensional list of Node objects, ordered by inheritance.
+        Retrieve a flat list of node descendents, ordered according to their
+        placement in the hierarchy.
 
-        ARGS
+    ARGS
         ----
         node: Node
-            The root node of the tree structure
+            The root Node of this tree/subtree.
 
         RETURNS
         -------
-        tree: [Node,]
-            A list of nodes.
-
-
-        NOTE
-        ----
-        Results in the sames as flat_structured_tree, but much slower. Use
-        flat_structured_tree.
+        nodes: [Node,]
+            A QuerySet of Node objects.
         '''
-        tree = []
-        children_count = self.children(node).count()
-        tree.append(node)
-
-        if children_count > 0:
-            children = self.children(node)
-            for child in children:
-                tree.extend(self.flat_structured_tree(child))
-        return tree
-
-    def flat_structured_tree(self, node):
-        '''
-        Get a one dimensional list of Node objects, ordered by inheritance.
-
-        ARGS
-        ----
-        node: Node
-            The root node of the tree structure
-
-        -------
-        tree: [Node,]
-            A list of nodes.
-        '''
-        import uuid
-        structure = []
-        ints = []
-        nodes = self.decendents(node)
-        from datetime import datetime
-        s_t = datetime.now()
-        paths = [x.path.split(',') for x in nodes]
-        e_t = datetime.now()
-        print('paths split done: {}'.format(e_t - s_t))
-
-        s_t = datetime.now()
-        paths = [[uuid.UUID(p) for p in path] for path in paths]
-        e_t = datetime.now()
-        print('paths uuid conversion done: {}'.format(e_t - s_t))
-
-        length_paths = len(paths)
-        s_t = datetime.now()
-        structure.append(paths[0])
-        ints.append(0)
-        for x in range(length_paths):
-            parent = structure.index(paths[x][:-1])
-            structure.insert(parent + 1, paths[x])
-            ints.insert(parent + 1, x)
-
-        tree = [nodes[i] for i in ints]
-        e_t = datetime.now()
-        print('paths split done: {}'.format(e_t - s_t))
-        return tree
+        nodes = self.descendants(node).order_by('path')
+        return nodes
 
     def delete_tree(self, node):
+        '''
+        Just a wrapper for Django Model .delete method. Will delete a node and
+        all of it's descendents.
+        '''
         node.delete()
