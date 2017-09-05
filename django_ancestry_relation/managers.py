@@ -113,6 +113,21 @@ class NodeManager(models.Manager):
             parent_node=node
         ).order_by('level')
 
+    def leaves(self, node):
+        if node.id != node.root_node_id:
+            raise Exception('node must be a root level node.')
+        else:
+            leaves = self.raw(
+                '''
+                SELECT * FROM django_ancestry_relation_testnode n1
+                WHERE (SELECT count(*) FROM django_ancestry_relation_testnode n2
+                    WHERE n2.parent_node_id = n1.id) = 0
+                AND n1.root_node_id = '{}'
+                ORDER BY n1.level ASC
+                '''.format(str(node.id))
+            )
+        return leaves
+
     def hierarchical_structured_tree(self, node):
         '''
         Get a structured representation of Nodes. Uses the StructuredNode class
@@ -121,12 +136,13 @@ class NodeManager(models.Manager):
         ARGS
         ----
         node: Node
-            The root of the tree being requested. This is be the root StructuredNode.
+            The root of the tree being requested. This is be the root
+            kStructuredNode.
 
         RETURNS
         -------
         tree: StructuredNode
-            A single StructuredNode object. Look at
+            A single StructuredNode object.
         '''
         from django_ancestry_relation.classes import StructuredNode
         children_count = self.children(node).count()
@@ -182,7 +198,6 @@ class NodeManager(models.Manager):
         node: Node
             The root node of the tree structure
 
-        RETURNS
         -------
         tree: [Node,]
             A list of nodes.
@@ -191,20 +206,29 @@ class NodeManager(models.Manager):
         structure = []
         ints = []
         nodes = self.decendents(node)
+        from datetime import datetime
+        s_t = datetime.now()
         paths = [x.path.split(',') for x in nodes]
+        e_t = datetime.now()
+        print('paths split done: {}'.format(e_t - s_t))
+
+        s_t = datetime.now()
         paths = [[uuid.UUID(p) for p in path] for path in paths]
+        e_t = datetime.now()
+        print('paths uuid conversion done: {}'.format(e_t - s_t))
 
         length_paths = len(paths)
+        s_t = datetime.now()
+        structure.append(paths[0])
+        ints.append(0)
         for x in range(length_paths):
-            if not structure:
-                structure.append(paths[x])
-                ints.append(x)
-            else:
-                parent = structure.index(paths[x][:-1])
-                structure.insert(parent + 1, paths[x])
-                ints.insert(parent + 1, x)
+            parent = structure.index(paths[x][:-1])
+            structure.insert(parent + 1, paths[x])
+            ints.insert(parent + 1, x)
 
         tree = [nodes[i] for i in ints]
+        e_t = datetime.now()
+        print('paths split done: {}'.format(e_t - s_t))
         return tree
 
     def delete_tree(self, node):
