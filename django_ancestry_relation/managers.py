@@ -128,7 +128,7 @@ class NodeManager(models.Manager):
             )
         return leaves
 
-    def hierarchical_(self, node):
+    def hierarchical_ordered(self, node):
         '''
         Get a structured representation of Nodes. Uses the StructuredNode class
         found at classes.StructuredNode.
@@ -146,7 +146,8 @@ class NodeManager(models.Manager):
 
         NOTE
         ----
-        This is slow. Do not use if descendants_ordered() can be used in any way.
+        This is slow. Do not use if descendants_ordered() can be used in
+        any way.
         '''
         from django_ancestry_relation.classes import StructuredNode
         children_count = self.children(node).count()
@@ -168,7 +169,7 @@ class NodeManager(models.Manager):
         Retrieve a flat list of node descendents, ordered according to their
         placement in the hierarchy.
 
-    ARGS
+        ARGS
         ----
         node: Node
             The root Node of this tree/subtree.
