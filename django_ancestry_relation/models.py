@@ -37,7 +37,7 @@ class Node(models.Model):
     )
     path = models.TextField(
         db_index=True,
-        help_text='A CSV list of the ids leading to this Node. Root will be a list of one item, it\'s own id.'
+        help_text='A CSV string of the ids leading to this Node. Root will be a string of one item, it\'s own id.'
     )
 
     objects = NodeManager()
